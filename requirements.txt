@@ -1,8 +1,6 @@
---pre
-tensorflow-cpu>=2.21.0rc1
+tflite-runtime
 streamlit
 pillow
 numpy
 pandas
 plotly
-protobuf
