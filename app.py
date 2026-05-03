@@ -4,8 +4,6 @@ try:
     import tflite_runtime.interpreter as tflite
 except ImportError:
     import tensorflow.lite as tflite
-from tensorflow.keras.preprocessing import image
-import numpy as np
 from PIL import Image
 from pathlib import Path
 import time
