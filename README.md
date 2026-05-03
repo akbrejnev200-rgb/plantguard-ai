@@ -3,10 +3,12 @@
 > Système de diagnostic des maladies végétales par intelligence artificielle  
 > **Auteur : Brejnev AKOUMANI**
 
-![Python](https://img.shields.io/badge/Python-3.10-blue)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.10-orange)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://plantguard-ai-1.streamlit.app/)
+
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-2.13-orange)
 ![Accuracy](https://img.shields.io/badge/Accuracy-98.94%25-brightgreen)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.24-red)
+![Streamlit](https://img.shields.io/badge/Streamlit-Cloud-red)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 ---
