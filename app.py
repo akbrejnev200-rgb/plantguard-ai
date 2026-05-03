@@ -1,9 +1,6 @@
 import streamlit as st
+import tensorflow as tf
 import numpy as np
-try:
-    import tflite_runtime.interpreter as tflite
-except ImportError:
-    import tensorflow.lite as tflite
 from PIL import Image
 from pathlib import Path
 import time
@@ -468,10 +465,8 @@ with st.sidebar:
 @st.cache_resource
 def load_model_once():
     try:
-        model_path = Path(__file__).parent / "model.tflite"
-        interpreter = tflite.Interpreter(model_path=str(model_path))
-        interpreter.allocate_tensors()
-        return interpreter
+        model_path = Path(__file__).parent / "saved_model"
+        return tf.saved_model.load(str(model_path))
     except Exception as e:
         st.error(f"Erreur chargement modèle : {e}")
         return None
@@ -564,16 +559,13 @@ if page == "Diagnostic":
 
                 img = Image.open(uploaded_file).convert('RGB').resize((224, 224))
                 img_array = np.array(img, dtype=np.float32)
-                # Prétraitement EfficientNet : normalisation [-1, 1]
-                img_array = (img_array / 127.5) - 1.0
-                img_tensor = np.expand_dims(img_array, axis=0)
+                img_array = tf.keras.applications.efficientnet.preprocess_input(img_array)
+                img_tensor = tf.expand_dims(img_array, axis=0)
 
-                # Inférence TFLite
-                input_details  = model.get_input_details()
-                output_details = model.get_output_details()
-                model.set_tensor(input_details[0]['index'], img_tensor)
-                model.invoke()
-                prediction = model.get_tensor(output_details[0]['index'])
+                infer = model.signatures["serving_default"]
+                output = infer(tf.constant(img_tensor))
+                output_key = list(output.keys())[0]
+                prediction = output[output_key].numpy()
 
                 top3_idx = np.argsort(prediction[0])[::-1][:3]
 
@@ -742,7 +734,7 @@ if page == "Diagnostic":
                     st.caption(f"{cls_name} — {prob:.1f}%")
 
         elif uploaded_file and not model:
-            st.warning("Modèle non chargé. Vérifiez que `best_model_efficientnet.keras` est dans le répertoire.")
+            st.warning("Modèle non chargé. Vérifiez que `model.tflite` est dans le répertoire.")
         else:
             st.markdown("""
             <div class='info-box'>
